@@ -1,3 +1,6 @@
+# Ignore uSWS testing data
+data/uSWS_data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

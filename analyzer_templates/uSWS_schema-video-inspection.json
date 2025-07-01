@@ -1,0 +1,60 @@
+{
+  "description": "Social-Housing Exit-Inspection Analyzer – room-by-room condition grading",
+  "baseAnalyzerId": "prebuilt-videoAnalyzer",
+  "config": {
+    "locales": ["en-US"],
+    "returnDetails": true,
+    "segmentationMode": "custom",
+    "segmentationDefinition": "Start a new segment whenever the camera clearly enters a different room or space (doorway threshold or verbal cue such as 'now the kitchen'). Follow the inspector’s anti-clockwise path template.",
+    "disableContentFiltering": false
+  },
+  "fieldSchema": {
+    "fields": {
+      "Segments": {
+        "type": "array",
+        "description": "One record per room or distinct area in the property.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "SegmentId": { "type": "string" },
+ 
+            "RoomType": {
+              "type": "string",
+              "method": "classify",
+              "enum": [
+                "Kitchen","Bathroom","Bedroom","LivingRoom","DiningRoom",
+                "Hallway","Laundry","Garage","Balcony","Exterior","Other"
+              ],
+              "description": "Identify the room based on visuals or spoken cues."
+            },
+ 
+            "OverallRoomCondition": {
+              "type": "integer",
+              "method": "generate",
+              "description": "Aggregate 0-10 condition score (10 = perfect, 0 = unusable)."
+            },
+ 
+            "Attributes": {
+              "type": "string",
+              "method": "generate",
+              "description": "Write a formatted list. For each room attribute, output a line formatted:\n  'Attribute | Grade(0-10) | Comment'.\nExample: 'Paint | 8 | Minor scuffs near door'."
+            },
+ 
+            "IssuesList": {
+              "type": "string",
+              "method": "generate",
+              "description": "Write a formatted list. List every defect needing remediation, one per line:\n  'IssueDescription | Severity(Critical/Major/Minor) | Timestamp'."
+            },
+ 
+            "AdditionalSafetyChecks": {
+              "type": "string",
+              "method": "generate",
+              "description": "Write a formatted list. Optional extra questions triggered by room features (e.g., blinds → 'Blind cords pose choking hazard | Yes/No')."
+            }
+          }
+        }
+      }
+    },
+    "definitions": {}
+  }
+}
